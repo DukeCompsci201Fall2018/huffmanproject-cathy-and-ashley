@@ -66,13 +66,13 @@ public class HuffProcessor {
 				throw new HuffException("illegal header starts with "+val);
 			}
 			
-			if (val == -1) {
-				throw new HuffException("illegal header starts with "+ val);
-			}
+			//if (val == -1) {
+			//	throw new HuffException("illegal header starts with "+ val);
+			//}
 			
 			HuffNode root = readTreeHeader(in);
 			readCompressedBits(root, in, out);
-			//out.writeBits(BITS_PER_WORD, val);
+			out.writeBits(BITS_PER_WORD, val);
 			out.close();
 		}
 	}
