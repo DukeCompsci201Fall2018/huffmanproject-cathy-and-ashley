@@ -72,7 +72,7 @@ public class HuffProcessor {
 			
 			HuffNode root = readTreeHeader(in);
 			readCompressedBits(root, in, out);
-			out.writeBits(BITS_PER_WORD, val);
+			//out.writeBits(BITS_PER_WORD, val);
 			out.close();
 		}
 	}
