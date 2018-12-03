@@ -59,11 +59,6 @@ public class HuffProcessor {
 	}
 	
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
-		//for each of the strings in the string array codings
-		//"a" --> 0100 which is the first string in codings
-		//given in, which is a length of binary 
-		//now you go through the entire n, reading the bits, and then writing
-		
 		int value = in.readBits(BITS_PER_WORD);
 		String code = codings[value];
 		out.writeBits(code.length(), Integer.parseInt(code,2));
@@ -90,8 +85,10 @@ public class HuffProcessor {
 	}
 
 	private void codingHelper(HuffNode root, String path, String[] encodings) {
+		if(root == null) return;
 		if(root.myLeft == null && root.myRight == null) {
 			path = encodings[root.myValue];
+			return;
 		}
 		codingHelper(root.myLeft, path+"0", encodings);
 		codingHelper(root.myRight, path+"1", encodings);
