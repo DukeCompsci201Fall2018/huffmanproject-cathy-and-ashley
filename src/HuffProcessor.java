@@ -61,7 +61,7 @@ public class HuffProcessor {
 	
 	public void decompress(BitInputStream in, BitOutputStream out){
 
-		while (true){
+		//while (true){
 			int val = in.readBits(BITS_PER_WORD);
 			if(val != HUFF_TREE) {
 				throw new HuffException("illegal header starts with "+val);
@@ -74,9 +74,9 @@ public class HuffProcessor {
 			
 			HuffNode root = readTreeHeader(in);
 			readCompressedBits(root, in, out);
-			out.writeBits(BITS_PER_WORD, val);
+			//out.writeBits(BITS_PER_WORD, val);
 			out.close();
-		}
+		//}
 	}
 
 	private void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out) {
