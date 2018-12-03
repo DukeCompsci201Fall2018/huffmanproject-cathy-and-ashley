@@ -42,8 +42,6 @@ public class HuffProcessor {
 	 *            Buffered bit stream writing to the output file.
 	 */
 	public void compress(BitInputStream in, BitOutputStream out){
-
-		
 		//int val = in.readBits(BITS_PER_INT);
 		//if (val == -1) break;
 		//out.writeBits(BITS_PER_INT, val);
@@ -59,16 +57,19 @@ public class HuffProcessor {
 		writeCompressedBits(codings,in,out);
 		out.close();
 	}
+	
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
-		for(int i = 0; i < codings.length; i++) {
-			String code = codings[i];
+		//for each of the strings in the string array codings
+		//"a" --> 0100 which is the first string in codings
+		//given in, which is a length of binary 
+		//now you go through the entire n, reading the bits, and then writing
+		
+		int value = in.readBits(BITS_PER_WORD);
+		String code = codings[value];
+		out.writeBits(code.length(), Integer.parseInt(code,2));
+		if(value == PSEUDO_EOF) {
 			out.writeBits(code.length(), Integer.parseInt(code,2));
-			if(i == PSEUDO_EOF) {
-				out.writeBits(code.length(), Integer.parseInt(code,2));
 			}
-		}
-		
-		
 	}
 
 	private void writeHeader(HuffNode root, BitOutputStream out) {
@@ -79,9 +80,7 @@ public class HuffProcessor {
 		}
 		else {
 			out.writeBits(BITS_PER_WORD + 1, 1);
-
 		}
-		
 	}
 
 	private String[] makeCodingsFromTree(HuffNode root) {
@@ -110,7 +109,7 @@ public class HuffProcessor {
 		while(pq.size() > 1) {
 			HuffNode left = pq.remove();
 			HuffNode right = pq.remove();
-			HuffNode t = new HuffNode(left.myValue + right.myValue, left.myWeight + right.myWeight, null, null);
+			HuffNode t = new HuffNode(left.myValue + right.myValue, left.myWeight + right.myWeight, left, right);
 			pq.add(t);
 		}
 		
@@ -185,8 +184,6 @@ public class HuffProcessor {
 
 	private HuffNode readTreeHeader(BitInputStream in) {
 		HuffNode root = new HuffNode(0, 0);
-		
-		
 			int singlebit = in.readBits(1);
 			if (singlebit == -1) {
 				throw new HuffException("there is no tree " + singlebit);
