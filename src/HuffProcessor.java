@@ -1,3 +1,10 @@
+/**
+ * @author Ashley Murray ajm120
+ * @author Cathy Lee pl135
+ */
+
+
+
 import java.util.PriorityQueue;
 
 /**
@@ -43,9 +50,6 @@ public class HuffProcessor {
 	 */
 	
 	public void compress(BitInputStream in, BitOutputStream out){
-		//int val = in.readBits(BITS_PER_INT);
-		//if (val == -1) break;
-		//out.writeBits(BITS_PER_INT, val);
 		
 		int[] counts = readForCounts(in);
 		HuffNode root = makeTreeFromCounts(counts);
@@ -66,7 +70,6 @@ public class HuffProcessor {
 	 * @param codings are the encodings for the 8-bit chunks stored in an array
 	 */
 	
-	//this is wrong
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
 		while (true) {
 			int value = in.readBits(BITS_PER_WORD);
@@ -91,7 +94,7 @@ public class HuffProcessor {
 	 * @param root the tree that contains the
 	 * @param out is the Buffered bit stream writing to the output file
 	 */
-	//is line 98 right?
+	
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if(root == null) {
 			return;
@@ -198,7 +201,7 @@ public class HuffProcessor {
 	
 	public void decompress(BitInputStream in, BitOutputStream out){
 
-		//while (true){
+	
 			int val = in.readBits(BITS_PER_INT); //reads the 32-bit magic number
 			if(val != HUFF_TREE) {
 				throw new HuffException("illegal header starts with "+val);
@@ -210,9 +213,8 @@ public class HuffProcessor {
 			
 			HuffNode root = readTreeHeader(in);
 			readCompressedBits(root, in, out);
-			//out.writeBits(BITS_PER_WORD, val);
 			out.close();
-		//}
+		
 	}
 
 	/**
