@@ -178,10 +178,10 @@ public class HuffProcessor {
 		int[] arrayint =  new int[ALPH_SIZE +1];
 		while(true) {
 		int value = in.readBits(BITS_PER_WORD);
-		arrayint[value]++;
 		if(value == -1) {
 			break;
 			}
+		arrayint[value]++;
 		}
 		arrayint[PSEUDO_EOF] = 1;
 		return arrayint;
