@@ -93,10 +93,9 @@ public class HuffProcessor {
 	 * @param out is the Buffered bit stream writing to the output file
 	 */
 	
-//was this one correct? changed from line 89 from 0 to 1
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if(root.myLeft != null || root.myRight != null) {
-			out.writeBits(1,root.myValue);
+			out.writeBits(0,root.myValue);
 			writeHeader(root.myLeft, out);
 			writeHeader(root.myRight, out);
 		}
