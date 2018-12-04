@@ -72,6 +72,15 @@ public class HuffProcessor {
 		if(value == -1) {
 			throw new HuffException("bad input, no PSEUDO_EOF");
 		}
+		
+		if(value > codings.length) {
+			throw new HuffException("bad input");
+		}
+		
+		if(out == null) {
+			throw new HuffException("bad input");
+		}
+		
 		String code = codings[value];
 		//next line is wrong
 		out.writeBits(code.length(), Integer.parseInt(code,2));
