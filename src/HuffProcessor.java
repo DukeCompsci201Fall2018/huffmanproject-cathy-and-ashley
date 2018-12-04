@@ -83,7 +83,6 @@ public class HuffProcessor {
 					out.writeBits(code.length(), Integer.parseInt(code,2));
 					break;
 				}
-			
 			}
 		}
 	}
@@ -97,7 +96,7 @@ public class HuffProcessor {
 //was this one correct? changed from line 89 from 0 to 1
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if(root.myLeft != null || root.myRight != null) {
-			out.writeBits(1,root.myValue);
+			out.writeBits(root.myValue, 0);
 			writeHeader(root.myLeft, out);
 			writeHeader(root.myRight, out);
 		}
