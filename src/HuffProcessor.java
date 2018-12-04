@@ -92,7 +92,7 @@ public class HuffProcessor {
 	 * @param root the tree that contains the
 	 * @param out is the Buffered bit stream writing to the output file
 	 */
-	
+	//is line 98 right?
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if(root.myLeft != null || root.myRight != null) {
 			out.writeBits(1,0);
@@ -101,7 +101,7 @@ public class HuffProcessor {
 		}
 		
 		else {
-			out.writeBits(BITS_PER_WORD + 1, 1);
+			out.writeBits(BITS_PER_WORD + 1, root.myValue);
 		}
 	}
 	
