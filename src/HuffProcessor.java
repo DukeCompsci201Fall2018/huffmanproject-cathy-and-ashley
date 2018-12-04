@@ -41,6 +41,7 @@ public class HuffProcessor {
 	 * @param out
 	 *            Buffered bit stream writing to the output file.
 	 */
+	
 	public void compress(BitInputStream in, BitOutputStream out){
 		//int val = in.readBits(BITS_PER_INT);
 		//if (val == -1) break;
@@ -65,12 +66,14 @@ public class HuffProcessor {
 	 * @param codings are the encodings for the 8-bit chunks stored in an array
 	 */
 	
+	//this is wrong
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
 		int value = in.readBits(BITS_PER_WORD);
 		if(value == -1) {
 			throw new HuffException("bad input, no PSEUDO_EOF");
 		}
 		String code = codings[value];
+		//next line is wrong
 		out.writeBits(code.length(), Integer.parseInt(code,2));
 		if(value == PSEUDO_EOF) {
 			out.writeBits(code.length(), Integer.parseInt(code,2));
@@ -82,7 +85,8 @@ public class HuffProcessor {
 	 * @param root the tree that contains the
 	 * @param out is the Buffered bit stream writing to the output file
 	 */
-
+	
+//was this one correct? changed from line 89 from 0 to 1
 	private void writeHeader(HuffNode root, BitOutputStream out) {
 		if(root.myLeft != null || root.myRight != null) {
 			out.writeBits(1,root.myValue);
@@ -93,12 +97,27 @@ public class HuffProcessor {
 			out.writeBits(BITS_PER_WORD + 1, 1);
 		}
 	}
-
+	
+	/**
+	 * Helper method for compress that creates a tree from the codings
+	 * @param root is the tree that make up the elements of the encoding
+	 * @return an array of strings such that the value at the index at the array is the encoding
+	 * of the value
+	 */
+	
 	private String[] makeCodingsFromTree(HuffNode root) {
 		String[] encodings = new String[ALPH_SIZE + 1];
 		codingHelper(root,"", encodings);
 		return encodings;
 	}
+	/**
+	 * Helper method for makeCodingsFromTree that actually creates the 0,1 path with recursive
+	 * calls
+	 * @param root the tree from makingCodingsFromTree
+	 * @param path is the binary encoding path of the leaves
+	 * @param encodings is the array to which the codings from the tree transversal
+	 * is created
+	 */
 
 	private void codingHelper(HuffNode root, String path, String[] encodings) {
 		if(root == null) return;
@@ -108,8 +127,14 @@ public class HuffProcessor {
 		}
 		codingHelper(root.myLeft, path+"0", encodings);
 		codingHelper(root.myRight, path+"1", encodings);
-		
 	}
+	
+	/**
+	 * Helper method for compress that uses a priority queue to make the tree
+	 * that will be later used to make the encodings
+	 * @param counts is the integer array that contains the frequencies
+	 * @return the tree with the counts stored 
+	 */
 
 	private HuffNode makeTreeFromCounts(int[] counts) {
 		PriorityQueue<HuffNode> pq = new PriorityQueue<>();
@@ -118,7 +143,6 @@ public class HuffProcessor {
 				pq.add(new HuffNode(i, counts[i], null, null));
 			}
 		}
-		
 		while(pq.size() > 1) {
 			HuffNode left = pq.remove();
 			HuffNode right = pq.remove();
@@ -133,8 +157,10 @@ public class HuffProcessor {
 	/**
 	 * determine the frequency of every 8-bit character/chunk in the file 
 	 * being compressed 
-	 * @param in
+	 * @param in is the Buffered bit stream of the file to be compressed
+	 * @return the array of frequencies of the 8-bit chunks in the file
 	 */
+	
 	private int[] readForCounts(BitInputStream in) {
 		int[] arrayint =  new int[ALPH_SIZE +1];
 		arrayint[PSEUDO_EOF] = 1;
@@ -155,6 +181,7 @@ public class HuffProcessor {
 	 * @param out
 	 *            Buffered bit stream writing to the output file.
 	 */
+	
 	public void decompress(BitInputStream in, BitOutputStream out){
 
 		//while (true){
@@ -181,6 +208,7 @@ public class HuffProcessor {
 	 * @param in Buffered bit stream of the file to be decompressed.
 	 * @param out Buffered bit stream writing to the output file.
 	 */
+	
 	private void readCompressedBits(HuffNode root, BitInputStream in, BitOutputStream out) {
 		HuffNode current = root;
 		while (true) {
@@ -208,7 +236,9 @@ public class HuffProcessor {
 	/**
 	 * read the tree used to decompress and return internal and leaf nodes
 	 * @param in Buffered bit stream of the file to be decompressed.
+	 * @return tree from the in stream
 	 */
+	
 	private HuffNode readTreeHeader(BitInputStream in) {
 		HuffNode root = new HuffNode(0, 0);
 			int singlebit = in.readBits(1);
