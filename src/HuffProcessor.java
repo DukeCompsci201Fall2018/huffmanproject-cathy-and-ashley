@@ -75,6 +75,9 @@ public class HuffProcessor {
 			}
 			else {
 				String code = codings[value];
+				if(code == null || out == null) {
+					break;
+				}
 				out.writeBits(code.length(), Integer.parseInt(code,2));
 				if(value == PSEUDO_EOF) {
 					out.writeBits(code.length(), Integer.parseInt(code,2));
