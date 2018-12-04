@@ -68,28 +68,21 @@ public class HuffProcessor {
 	
 	//this is wrong
 	private void writeCompressedBits(String[] codings, BitInputStream in, BitOutputStream out) {
-		int value = in.readBits(BITS_PER_WORD);
-		if(value == -1) {
-			throw new HuffException("bad input, no PSEUDO_EOF");
-		}
-		
-		if(value > codings.length) {
-			throw new HuffException("bad input");
-		}
-		
-		if(out == null) {
-			throw new HuffException("bad input");
-		}
-		
-		String code = codings[value];
-		//next line is wrong
-		if(code == null) {
-			throw new HuffException("bad input");
-		}
-		out.writeBits(code.length(), Integer.parseInt(code,2));
-		if(value == PSEUDO_EOF) {
-			out.writeBits(code.length(), Integer.parseInt(code,2));
+		while (true) {
+			int value = in.readBits(BITS_PER_WORD);
+			if(value == -1) {
+				throw new HuffException("bad input, no PSEUDO_EOF");
 			}
+			else {
+				String code = codings[value];
+				out.writeBits(code.length(), Integer.parseInt(code,2));
+				if(value == PSEUDO_EOF) {
+					out.writeBits(code.length(), Integer.parseInt(code,2));
+					break;
+				}
+			
+			}
+		}
 	}
 	
 	/**
