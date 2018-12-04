@@ -94,6 +94,10 @@ public class HuffProcessor {
 	 */
 	//is line 98 right?
 	private void writeHeader(HuffNode root, BitOutputStream out) {
+		if(root == null) {
+			return;
+		}
+		
 		if(root.myLeft != null || root.myRight != null) {
 			out.writeBits(1,0);
 			writeHeader(root.myLeft, out);
@@ -101,6 +105,7 @@ public class HuffProcessor {
 		}
 		
 		else {
+			out.writeBits(1,1);
 			out.writeBits(BITS_PER_WORD + 1, root.myValue);
 		}
 	}
@@ -129,7 +134,7 @@ public class HuffProcessor {
 	private void codingHelper(HuffNode root, String path, String[] encodings) {
 		if(root == null) return;
 		if(root.myLeft == null && root.myRight == null) {
-			path = encodings[root.myValue];
+			encodings[root.myValue] = path;
 			return;
 		}
 		codingHelper(root.myLeft, path+"0", encodings);
@@ -153,6 +158,7 @@ public class HuffProcessor {
 		while(pq.size() > 1) {
 			HuffNode left = pq.remove();
 			HuffNode right = pq.remove();
+			//should the value to 0
 			HuffNode t = new HuffNode(left.myValue + right.myValue, left.myWeight + right.myWeight, left, right);
 			pq.add(t);
 		}
@@ -170,12 +176,14 @@ public class HuffProcessor {
 	
 	private int[] readForCounts(BitInputStream in) {
 		int[] arrayint =  new int[ALPH_SIZE +1];
-		arrayint[PSEUDO_EOF] = 1;
+		while(true) {
 		int value = in.readBits(BITS_PER_WORD);
 		arrayint[value]++;
 		if(value == -1) {
-			throw new HuffException("illegal header starts with "+ value);
+			break;
+			}
 		}
+		arrayint[PSEUDO_EOF] = 1;
 		return arrayint;
 	}
 
